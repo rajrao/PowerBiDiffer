@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.IO.Packaging;
 using System.Linq;
+using System.Text;
 using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -186,27 +188,46 @@ namespace PowerBiDiffer
         private static string ExtractTextFromPbix(string filePath)
         {
             string sanitizedText = string.Empty;
-            using (ZipArchive archive = ZipFile.OpenRead(filePath))
+            using (Package package =
+                Package.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                ZipArchiveEntry entry = archive.Entries.FirstOrDefault(e =>
-                    e.FullName.EndsWith("DataMashup", StringComparison.OrdinalIgnoreCase));
-                if (entry != null)
+                var dataMashupPart = package.GetPart(new Uri("/DataMashup", UriKind.Relative));
+                using var dataMashupStream = dataMashupPart.GetStream();
+                using BinaryReader reader1 = new BinaryReader(dataMashupStream, Encoding.Default, true);
                 {
-                    // Gets the full path to ensure that relative segments are removed.
+                    //ms-qdeff - query definition file format
+                    //https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-qdeff/27b1dd1e-7de8-45d9-9c84-dfcc7a802e37
+                    //first 4 bytes = version
+                    //next 4 bytes = length of parts
+                    //use length of parts to ready bytes for next stream
 
-                    string destinationFile = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
-                    string destinationPath = Path.Combine(Path.GetTempPath(), destinationFile + "_dataMashup");
-                    File.Delete(destinationPath);
-                    entry.ExtractToFile(destinationPath);
-                    var fileText = File.ReadAllText(destinationPath);
-                    fileText = HttpUtility.HtmlDecode(fileText);
-                    sanitizedText = fileText?.Replace("\\r\\n", Environment.NewLine).Replace("\\\"", "\"").Replace("/><", $"/>{Environment.NewLine}<");
-
-
+                    int version = (int)reader1.ReadUInt32();
+                    int packagePartsLength = (int)reader1.ReadUInt32();
+                    var packageParts = reader1.ReadBytes(packagePartsLength);
+                    var packagePartsStream = ToMemoryStream(packageParts);
+                    using (var internalPackage = Package.Open(packagePartsStream, FileMode.Open, FileAccess.Read))
+                    {
+                        using var formulaStream = internalPackage.GetPart(new Uri("/Formulas/Section1.m", UriKind.Relative)).GetStream();
+                        sanitizedText = ReadString(formulaStream);
+                    }
                 }
             }
 
             return sanitizedText;
+        }
+
+        static MemoryStream ToMemoryStream(byte[] bytes)
+        {
+            MemoryStream stream = new MemoryStream(bytes.Length);
+            stream.Write((ReadOnlySpan<byte>)bytes);
+            stream.Position = 0L;
+            return stream;
+        }
+
+        static string ReadString(Stream stream)
+        {
+            using (StreamReader streamReader = new StreamReader(stream, true))
+                return streamReader.ReadToEnd();
         }
     }
 }
