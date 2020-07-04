@@ -1,4 +1,6 @@
 name: .NET Core
+env: 
+  SEMVER: ${{ format('0.1.0-alpha+{0}', github.run_id ) }}
 
 on:
   push:
@@ -20,6 +22,14 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore -p:Version=${{ env.SEMVER }}
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+    - name: Pack
+      run: dotnet pack PowerBiDiffer --configuration Release -o finalpackage --no-build -p:PackageVersion=${{ env.SEMVER }}
+    - name: Publish artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: PowerBiDiffer
+        path: finalpackage
+    
