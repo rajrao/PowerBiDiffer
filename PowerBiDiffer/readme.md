@@ -1,3 +1,5 @@
+
+
 config
 
 [diff]
@@ -7,15 +9,15 @@ config
 	prompt = false
 [difftool "vsdiffmerge"]
 	#cmd = \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer\\vsdiffmerge.exe\" \"$LOCAL\" \"$REMOTE\" //t
-	cmd = \"C:\\Junk\\Sources\\Test\\ConsoleApp1\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\consoleapp1.exe\" -diff \"$LOCAL\" \"$REMOTE\"
+	cmd = \"C:\\Users\\rrao\\source\\repos\\GitHub\\PowerBiDiffer\\PowerBiDiffer\\bin\\Debug\\netcoreapp3.1\\PowerBiDiffer.exe\" -diff \"$LOCAL\" \"$REMOTE\"
 	keepBackup = false
 [diff "json"]
-	textconv = \"C:\\Junk\\Sources\\Test\\ConsoleApp1\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\consoleapp1.exe\" -textconv
+	textconv = \"C:\\Users\\rrao\\source\\repos\\GitHub\\PowerBiDiffer\\PowerBiDiffer\\bin\\Debug\\netcoreapp3.1\\PowerBiDiffer.exe\" -textconv
 [diff "pbix"]
-	textconv = \"C:\\Junk\\Sources\\Test\\ConsoleApp1\\ConsoleApp1\\bin\\Debug\\netcoreapp3.1\\consoleapp1.exe\" -textconv
-	tool = vsdiffmerge
-	guitool = vsdiffmerge
-	binary = true
+	textconv = \"C:\\Users\\rrao\\source\\repos\\GitHub\\PowerBiDiffer\\PowerBiDiffer\\bin\\Debug\\netcoreapp3.1\\PowerBiDiffer.exe\" -textconv
+	#tool = vsdiffmerge
+	#guitool = vsdiffmerge
+	#binary = true
 
 
 
