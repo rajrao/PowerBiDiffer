@@ -1,3 +1,5 @@
+![.NET Core](https://github.com/rajrao/PowerBiDiffer/workflows/.NET%20Core/badge.svg)
+
 # ReadMe #
 
 ## Introduction ##
