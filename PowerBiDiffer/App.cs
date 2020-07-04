@@ -1,36 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace PowerBiDiffer
 {
     class App
     {
-        public static void ExecuteComparison(string localFilePath, string remoteFilePath)
-        {
-            var diffToolVsPath =
-                @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.exe";
-            var argumentsVs = "/diff";
-            var diffToolPbix = @"C:\Program Files (x86)\WinMerge\WinMergeU.exe";
-            var argumentsPbix = "/e /s";
-            //var diffToolPath =
-            //    @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TeamFoundation\Team Explorer\vsdiffmerge.exe";
-            //var arguments = "/t";
-
-            if (string.Equals(localFilePath, "nul", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(remoteFilePath, "nul", StringComparison.OrdinalIgnoreCase))
+        public static void ExecuteComparison(AppOptionsDiffTool appOptionsDiffTool)
+        {   
+            if (string.Equals(appOptionsDiffTool.LocalFile, "nul", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(appOptionsDiffTool.RemoteFile, "nul", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
-            var localFileName = Path.GetFileNameWithoutExtension(localFilePath);
-            var remoteFileName = Path.GetFileNameWithoutExtension(remoteFilePath);
-            var extensionLocalFile = Path.GetExtension(localFilePath);
-            var extensionRemoteFile = Path.GetExtension(remoteFilePath);
+            var localFileName = Path.GetFileNameWithoutExtension(appOptionsDiffTool.LocalFile);
+            var remoteFileName = Path.GetFileNameWithoutExtension(appOptionsDiffTool.RemoteFile);
+            var extensionLocalFile = Path.GetExtension(appOptionsDiffTool.LocalFile);
+            var extensionRemoteFile = Path.GetExtension(appOptionsDiffTool.RemoteFile);
 
             string sanitizedLocalFilePath;
             string sanitizedRemoteFilePath;
-            string diffTool;
-            string diffArguments;
             if (string.Equals(extensionLocalFile, extensionRemoteFile, StringComparison.OrdinalIgnoreCase))
             {
                 var isJson = string.Compare(
@@ -44,58 +34,62 @@ namespace PowerBiDiffer
                 {
                     IExtractText processor = new PbixProcessor();
 
-                    var sanitizedTextLocal = processor.ExtractTextFromFile(localFilePath);
+                    var sanitizedTextLocal = processor.ExtractTextFromFile(appOptionsDiffTool.LocalFile, new ExtractTextOptions{IncludeMetaData = true});
                     sanitizedLocalFilePath = WriteToTemp(sanitizedTextLocal, ".txt");
 
-                    var sanitizedTextRemote = processor.ExtractTextFromFile(remoteFilePath);
+                    var sanitizedTextRemote = processor.ExtractTextFromFile(appOptionsDiffTool.RemoteFile, new ExtractTextOptions { IncludeMetaData = true });
                     sanitizedRemoteFilePath = WriteToTemp(sanitizedTextRemote, ".txt");
-
-                    diffTool = diffToolPbix;
-                    diffArguments =
-                        $@"{argumentsPbix} ""{sanitizedLocalFilePath}"" ""{sanitizedRemoteFilePath}"" /dl ""{localFileName}"" /dr ""{remoteFileName}""";
                 }
                 else if (isJson)
                 {
                     IExtractText processor = new JsonProcessor();
-                    var sanitizedTextLocal = processor.ExtractTextFromFile(localFilePath);
+                    var sanitizedTextLocal = processor.ExtractTextFromFile(appOptionsDiffTool.LocalFile);
                     sanitizedLocalFilePath = WriteToTemp(sanitizedTextLocal, ".json");
 
-                    var sanitizedTextRemote = processor.ExtractTextFromFile(remoteFilePath);
+                    var sanitizedTextRemote = processor.ExtractTextFromFile(appOptionsDiffTool.RemoteFile);
                     sanitizedRemoteFilePath = WriteToTemp(sanitizedTextRemote, ".json");
-
-                    //diffTool = diffToolVsPath;
-                    //diffArguments =
-                    //    $@"{argumentsVs} ""{sanitizedLocalFilePath}"" ""{sanitizedRemoteFilePath}"" ""{localFileName}"" ""{remoteFileName}""";
-
-                    diffTool = diffToolPbix;
-                    diffArguments =
-                        $@"{argumentsPbix} ""{sanitizedLocalFilePath}"" ""{sanitizedRemoteFilePath}"" /dl ""{localFileName}"" /dr ""{remoteFileName}""";
                 }
                 else
                 {
-                    sanitizedLocalFilePath = localFilePath;
-                    sanitizedRemoteFilePath = remoteFilePath;
-
-                    diffTool = diffToolVsPath;
-                    diffArguments =
-                        $@"{argumentsVs} ""{sanitizedLocalFilePath}"" ""{sanitizedRemoteFilePath}"" ""{localFileName}"" ""{remoteFileName}""";
+                    sanitizedLocalFilePath = appOptionsDiffTool.LocalFile;
+                    sanitizedRemoteFilePath = appOptionsDiffTool.LocalFile;
                 }
             }
             else
             {
-                sanitizedLocalFilePath = localFilePath;
-                sanitizedRemoteFilePath = remoteFilePath;
-
-                diffTool = diffToolVsPath;
-                diffArguments =
-                    $@"{argumentsVs} ""{sanitizedLocalFilePath}"" ""{sanitizedRemoteFilePath}"" ""{localFileName}"" ""{remoteFileName}""";
+                sanitizedLocalFilePath = appOptionsDiffTool.LocalFile;
+                sanitizedRemoteFilePath = appOptionsDiffTool.RemoteFile;
             }
 
+            
+            var diffTool = appOptionsDiffTool.DiffTool;
+            Dictionary<string, string> templateData = new Dictionary<string, string>(){
+                {"{localFilePath}", sanitizedLocalFilePath},
+                {"{remoteFilePath}", sanitizedRemoteFilePath},
+                {"{localFileName}", localFileName},
+                {"{remoteFileName}", remoteFileName},
+                {"{lp}", sanitizedLocalFilePath},
+                {"{rp}", sanitizedRemoteFilePath},
+                {"{ln}", localFileName},
+                {"{rn}", remoteFileName},
+            };
+            var diffArguments = appOptionsDiffTool.DiffToolArguments.InstantiateTemplate(templateData);
+            
+            if (appOptionsDiffTool.Verbose)
+            {
+                Console.WriteLine($"DiffTool: {diffTool}");
+                Console.WriteLine($"DiffTool Args: {diffArguments}");
+                Console.WriteLine($"CommandLine: {diffTool} {diffArguments}");
+            }
             using (System.Diagnostics.Process pProcess = new System.Diagnostics.Process())
             {
                 pProcess.StartInfo.FileName = diffTool;
                 pProcess.StartInfo.Arguments = diffArguments;
-                pProcess.Start();
+                var processStarted = pProcess.Start();
+                if (!processStarted && appOptionsDiffTool.Verbose)
+                {
+                    Console.WriteLine("Process was not started!");
+                }
             }
         }
 
@@ -104,10 +98,10 @@ namespace PowerBiDiffer
             var isJson = string.Compare(
                 Path.GetExtension(filePath),
                 ".json", StringComparison.OrdinalIgnoreCase) == 0;
-            var isPBIX = string.Compare(
+            var isPbix = string.Compare(
                 Path.GetExtension(filePath),
                 ".pbix", StringComparison.OrdinalIgnoreCase) == 0;
-            if (isPBIX)
+            if (isPbix)
             {
                 IExtractText processor = new PbixProcessor();
                 var sanitizedText = processor.ExtractTextFromFile(filePath);

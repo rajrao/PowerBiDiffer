@@ -2,6 +2,6 @@
 {
     public interface IExtractText
     {
-        string ExtractTextFromFile(string fileName);
+        string ExtractTextFromFile(string fileName, ExtractTextOptions extractTextOptions = null);
     }
 }

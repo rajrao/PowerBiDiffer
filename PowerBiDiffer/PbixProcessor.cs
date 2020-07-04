@@ -9,7 +9,7 @@ namespace PowerBiDiffer
 {
     public class PbixProcessor : IExtractText
     {
-        public string ExtractTextFromFile(string filePath)
+        public string ExtractTextFromFile(string filePath, ExtractTextOptions extractTextOptions)
         {
             //https://www.fourmoo.com/2017/05/02/what-makes-up-a-power-bi-desktop-pbix-file/
             //https://docs.microsoft.com/en-us/dotnet/api/system.io.packaging.package.open?view=dotnet-plat-ext-3.1
@@ -20,12 +20,21 @@ namespace PowerBiDiffer
             {
                 var dataMashupPart = package.GetPart(new Uri("/DataMashup", UriKind.Relative));
                 using var dataMashupStream = dataMashupPart.GetStream();
-                var dataMashupParts = GetPackagePartContents(dataMashupPart, new List<string> { "/Formulas/Section1.m", "/Config/Package.xml" });
-                sanitizedText = dataMashupParts["/Formulas/Section1.m"] 
-                                + Environment.NewLine 
-                                + "------------------------------------------------" 
-                                + Environment.NewLine +
-                                dataMashupParts["DataMashup.Metadata"];
+                var dataMashupParts = GetPackagePartContents(dataMashupPart, new List<string> { "/Formulas/Section1.m"});
+
+                if (extractTextOptions != null && extractTextOptions.IncludeMetaData)
+                {
+                    sanitizedText = dataMashupParts["/Formulas/Section1.m"]
+                                    + Environment.NewLine + Environment.NewLine
+                                    + "-------------- Mashup Metadata ------------------"
+                                    + Environment.NewLine + Environment.NewLine
+                                    + dataMashupParts["DataMashup.Metadata"];
+
+                }
+                else
+                {
+                    sanitizedText = dataMashupParts["/Formulas/Section1.m"];
+                }
             }
 
             return sanitizedText;

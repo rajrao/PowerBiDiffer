@@ -7,7 +7,7 @@ namespace PowerBiDiffer
 {
     public class JsonProcessor : IExtractText
     {
-        public string ExtractTextFromFile(string filePath)
+        public string ExtractTextFromFile(string filePath, ExtractTextOptions extractTextOptions = null)
         {
             using var textStream = File.OpenText(filePath);
             using var jsonTextReader = new JsonTextReader(textStream) { DateParseHandling = DateParseHandling.None };

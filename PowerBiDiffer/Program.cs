@@ -3,42 +3,114 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Web;
+using CommandLine;
+using CommandLine.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace PowerBiDiffer
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            if (args.Length < 1)
+            var services = new ServiceCollection();
+
+            if (!ProcessCommandLineArgs(args, services))
             {
-                throw new ArgumentException("Args cannot be empty and must define -textconv or -diff");
+                return;
             }
 
-            var type = args[0];
 
-            if (type.EndsWith("-textconv", StringComparison.OrdinalIgnoreCase))
+            await using ServiceProvider serviceProvider = services.BuildServiceProvider();
+
+            var appOptions = serviceProvider.GetService<AppOptions>();
+
+            if (appOptions.Verbose)
             {
-                if (args.Length < 3)
+                Console.WriteLine("Args....");
+                foreach (string arg in args)
                 {
-                    throw new ArgumentException("when using -textconv mode, then 1 file path must be provided for the text conversion");
+                    Console.WriteLine(arg);
                 }
-                App.ConvertToText(args[1]);
+                Console.WriteLine("Args printed!");
             }
-            else if (type.EndsWith("-diff", StringComparison.OrdinalIgnoreCase))
-            {
-                if (args.Length < 3)
-                {
-                    throw new ArgumentException("when using -diff mode, then 2 filepaths should be provided");
-                }
 
-                App.ExecuteComparison(args[1], args[2]);
-            }
-            else
+            switch (appOptions)
             {
-                throw new Exception($"this is an error");
+                case AppOptionsDiffTool appOptionsDiffTool:
+                    if (string.IsNullOrWhiteSpace(appOptionsDiffTool.LocalFile) || !File.Exists(appOptionsDiffTool.LocalFile))
+                    {
+                        throw new ArgumentOutOfRangeException("LocalFile", "localfile cannot be empty and must exist!");
+                    }
+                    if (string.IsNullOrWhiteSpace(appOptionsDiffTool.RemoteFile) || !File.Exists(appOptionsDiffTool.RemoteFile))
+                    {
+                        throw new ArgumentOutOfRangeException("RemoteFile", "RemoteFile cannot be empty and must exist!");
+                    }
+                    if (string.IsNullOrWhiteSpace(appOptionsDiffTool.DiffTool) || !File.Exists(appOptionsDiffTool.DiffTool))
+                    {
+                        throw new ArgumentOutOfRangeException("DiffTool", "DiffTool cannot be empty and must exist!");
+                    }
+
+                    App.ExecuteComparison(appOptionsDiffTool);
+                    break;
+                case AppOptionsTextConv appOptionsTextConv:
+                    if (string.IsNullOrWhiteSpace(appOptionsTextConv.LocalFile) || !File.Exists(appOptionsTextConv.LocalFile))
+                    {
+                        throw new ArgumentOutOfRangeException("LocalFile", "localfile cannot be empty and must exist!");
+                    }
+                    App.ConvertToText(appOptionsTextConv.LocalFile);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(appOptions));
             }
+
+
+        }
+
+        /// <summary>
+        /// Return false if errors were encountered
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private static bool ProcessCommandLineArgs(string[] args, ServiceCollection services)
+        {
+            bool argumentsHasErrors = false;
+            var parserResult = new Parser(config =>
+                {
+                    config.HelpWriter = null;
+                    config.CaseSensitive = false;
+                    config.AutoHelp = true;
+                    config.IgnoreUnknownArguments = false;
+                })
+                .ParseArguments<AppOptionsTextConv, AppOptionsDiffTool>(args); //list options classes
+
+            parserResult.WithParsed(appOptions =>
+                {
+                    services.AddSingleton(appOptions as AppOptions);
+                    string options = Parser.Default.FormatCommandLine(appOptions, configuration =>
+                    {
+                        configuration.UseEqualToken = true;
+                        configuration.SkipDefault = false;
+                    });
+                    Console.WriteLine(options);
+
+                })
+                .WithNotParsed(errors =>
+                {
+                    argumentsHasErrors = true;
+                    var helpText = HelpText.AutoBuild(parserResult, h =>
+                    {
+                        h.AdditionalNewLineAfterOption = false;
+                        h.AddNewLineBetweenHelpSections = true;
+                        h.AddEnumValuesToHelpText = true;
+                        return HelpText.DefaultParsingErrorsHandler(parserResult, h);
+                    }, e => e);
+                    Console.WriteLine(helpText);
+                });
+            return !argumentsHasErrors;
         }
     }
 }
