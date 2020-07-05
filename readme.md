@@ -1,7 +1,5 @@
 ![.NET Core](https://github.com/rajrao/PowerBiDiffer/workflows/.NET%20Core/badge.svg)
 
-# ReadMe #
-
 ## Introduction ##
 
 This tool can be used to extract and display the power query mashup formulas in use by your PBIX file. Its primary purpose is to work with #GIT, but can be used standalone to. There are 2 ways in which it can be used with GIT: using GIT's differencing engine using **textconv** driver and using an external tool (such as visual studio or WinMerge). In addition, the tool also can be used with JSON files. This allows you to difference dataflow JSON files that you might have exported out of PowerBi online.
