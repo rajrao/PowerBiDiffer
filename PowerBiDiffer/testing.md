@@ -11,3 +11,7 @@ textconv "..\..\..\..\TestPBix\testA.json"
 #WinMerge#
 	difftool "..\..\..\..\TestPBix\testA.json" "..\..\..\..\TestPBix\testb.json" -d "C:\Program Files (x86)\WinMerge\winmergeu.exe" -a "/xq /e /s /dl \"{ln}\" /dr \"{rn}\" \"{lp}\" \"{rp}\"" -v
 
+
+
+#Post Deploy#
+xcopy "$(ProjectDir)$(OutDir)" "c:\PowerBiDiffer\" /i/d/y

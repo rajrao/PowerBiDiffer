@@ -41,11 +41,13 @@ namespace PowerBiDiffer
             switch (appOptions)
             {
                 case AppOptionsDiffTool appOptionsDiffTool:
-                    if (string.IsNullOrWhiteSpace(appOptionsDiffTool.LocalFile) || !File.Exists(appOptionsDiffTool.LocalFile))
+                    if (string.IsNullOrWhiteSpace(appOptionsDiffTool.LocalFile) || 
+                        (!appOptionsDiffTool.LocalFile.Equals("nul", StringComparison.OrdinalIgnoreCase) && !File.Exists(appOptionsDiffTool.LocalFile)))
                     {
                         throw new ArgumentOutOfRangeException("LocalFile", "localfile cannot be empty and must exist!");
                     }
-                    if (string.IsNullOrWhiteSpace(appOptionsDiffTool.RemoteFile) || !File.Exists(appOptionsDiffTool.RemoteFile))
+                    if (string.IsNullOrWhiteSpace(appOptionsDiffTool.RemoteFile) ||
+                        (!appOptionsDiffTool.RemoteFile.Equals("nul", StringComparison.OrdinalIgnoreCase) && !File.Exists(appOptionsDiffTool.RemoteFile)))
                     {
                         throw new ArgumentOutOfRangeException("RemoteFile", "RemoteFile cannot be empty and must exist!");
                     }
