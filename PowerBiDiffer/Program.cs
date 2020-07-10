@@ -86,6 +86,7 @@ namespace PowerBiDiffer
                     config.CaseSensitive = false;
                     config.AutoHelp = true;
                     config.IgnoreUnknownArguments = false;
+                    config.EnableDashDash = true;
                 })
                 .ParseArguments<AppOptionsTextConv, AppOptionsDiffTool>(args); //list options classes
 
