@@ -34,6 +34,8 @@ When used with PBIX, the tool extracts the mashup formulas in your PBIX file. If
 			prompt = false
 		[difftool "PowerBiDiffer"]
 			cmd = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" difftool "$LOCAL" "$REMOTE" -d \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Common7\\IDE\\devenv.exe\" -a '/diff \"{lp}\" \"{rp}\" \"{ln}\" \"{rn}\"'
+			#uncomment below to use winmerge
+			#cmd = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" difftool "$LOCAL" "$REMOTE" -d \"C:\\Program Files (x86)\\WinMerge\\winmergeu.exe\" -a '/xq /e /s /dl \"{ln}\" /dr \"{rn}\" \"{lp}\" \"{rp}\"' -v
 			keepBackup = false
 		[diff "json"]
 			textconv = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" textconv
