@@ -79,6 +79,10 @@ When used with PBIX, the tool extracts the mashup formulas in your PBIX file. If
 	Display the difference for only files with extension \*.json
 	
 		git difftool *.json
+		
+	Display the difference for only files with extension \*.json, comparing current set of files to previous check in (useful when you are looking at changes in branch)
+	
+		git difftool HEAD^^ *.json
 
 ## Standalone Usage ##
 
