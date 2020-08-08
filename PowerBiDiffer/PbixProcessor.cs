@@ -11,6 +11,10 @@ namespace PowerBiDiffer
     {
         public string ExtractTextFromFile(string filePath, ExtractTextOptions extractTextOptions)
         {
+            var fileIsNull = string.Equals(filePath, "nul", StringComparison.OrdinalIgnoreCase);
+            if (fileIsNull)
+                return string.Empty;
+
             //https://www.fourmoo.com/2017/05/02/what-makes-up-a-power-bi-desktop-pbix-file/
             //https://docs.microsoft.com/en-us/dotnet/api/system.io.packaging.package.open?view=dotnet-plat-ext-3.1
 

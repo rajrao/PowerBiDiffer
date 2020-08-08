@@ -35,7 +35,7 @@ When used with PBIX, the tool extracts the mashup formulas in your PBIX file. If
 		[difftool "PowerBiDiffer"]
 			cmd = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" difftool "$LOCAL" "$REMOTE" -d \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Common7\\IDE\\devenv.exe\" -a '/diff \"{lp}\" \"{rp}\" \"{ln}\" \"{rn}\"'
 			#uncomment below to use winmerge
-			#cmd = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" difftool "$LOCAL" "$REMOTE" -d \"C:\\Program Files (x86)\\WinMerge\\winmergeu.exe\" -a '/xq /e /s /dl \"{ln}\" /dr \"{rn}\" \"{lp}\" \"{rp}\"' -v
+			#cmd = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" difftool "$LOCAL" "$REMOTE" -d \"C:\\Program Files (x86)\\WinMerge\\winmergeu.exe\" -a '/xq /e /s /dl \"{ln}\" /dr \"{rn}\" \"{lp}\" \"{rp}\"'
 			keepBackup = false
 		[diff "json"]
 			textconv = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" textconv
@@ -109,3 +109,27 @@ When used with PBIX, the tool extracts the mashup formulas in your PBIX file. If
 	### WinMerge ###
 
 		difftool "testA.json" "testb.json" -d "C:\Program Files (x86)\WinMerge\winmergeu.exe" -a "/xq /e /s /dl \"{ln}\" /dr \"{rn}\" \"{lp}\" \"{rp}\"" -v
+
+
+## Command Line Options ##
+
+### Verbs: ###
+  textconv    Mode: Text Conversion
+  difftool    Mode: Diff Tool
+  help        Display more information on a specific command.
+  version     Display version information.
+
+### Options: ###
+  -d, --difftool    Diff Tool Path
+  -a, --args        Diff Tool arguments. Supported templates: {localFilePath} or
+                    {lp}: Local file path{remoteFilePath} or {rp}: Remote file
+                    path{localFileName} or {ln}: local file name (for
+                    description){remoteFileName} or {rn}: remote file name (for
+                    description)
+  -v                (Default: false) Verbose
+  -l                (Default: false) Break into debugger
+  -j                (Default: true) Treat json files as JSON and not as text
+  value pos. 0      Required. Local file
+  value pos. 1      Remote file
+  --help            Display this help screen.
+  --version         Display version information.

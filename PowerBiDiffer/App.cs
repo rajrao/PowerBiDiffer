@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace PowerBiDiffer
@@ -7,61 +8,64 @@ namespace PowerBiDiffer
     class App
     {
         public static void ExecuteComparison(AppOptionsDiffTool appOptionsDiffTool)
-        {   
-            if (string.Equals(appOptionsDiffTool.LocalFile, "nul", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(appOptionsDiffTool.RemoteFile, "nul", StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-
+        {
             var localFileName = Path.GetFileNameWithoutExtension(appOptionsDiffTool.LocalFile);
             var remoteFileName = Path.GetFileNameWithoutExtension(appOptionsDiffTool.RemoteFile);
             var extensionLocalFile = Path.GetExtension(appOptionsDiffTool.LocalFile);
             var extensionRemoteFile = Path.GetExtension(appOptionsDiffTool.RemoteFile);
 
-            string sanitizedLocalFilePath;
-            string sanitizedRemoteFilePath;
-            if (string.Equals(extensionLocalFile, extensionRemoteFile, StringComparison.OrdinalIgnoreCase))
-            {
-                var isJson = string.Compare(
-                    extensionLocalFile,
-                    ".json", StringComparison.OrdinalIgnoreCase) == 0;
-                var isPbix = string.Compare(
-                    extensionLocalFile,
-                    ".pbix", StringComparison.OrdinalIgnoreCase) == 0;
-                
-                if (isPbix)
-                {
-                    IExtractText processor = new PbixProcessor();
+            var localFileIsNull = string.Equals(appOptionsDiffTool.LocalFile, "nul", StringComparison.OrdinalIgnoreCase);
+            var remoteFileIsNull = string.Equals(appOptionsDiffTool.RemoteFile, "nul", StringComparison.OrdinalIgnoreCase);
 
-                    var sanitizedTextLocal = processor.ExtractTextFromFile(appOptionsDiffTool.LocalFile, new ExtractTextOptions{IncludeMetaData = true});
-                    sanitizedLocalFilePath = WriteToTemp(sanitizedTextLocal, ".txt");
-
-                    var sanitizedTextRemote = processor.ExtractTextFromFile(appOptionsDiffTool.RemoteFile, new ExtractTextOptions { IncludeMetaData = true });
-                    sanitizedRemoteFilePath = WriteToTemp(sanitizedTextRemote, ".txt");
-                }
-                else if (isJson)
-                {
-                    IExtractText processor = new JsonProcessor();
-                    var sanitizedTextLocal = processor.ExtractTextFromFile(appOptionsDiffTool.LocalFile);
-                    sanitizedLocalFilePath = WriteToTemp(sanitizedTextLocal, ".json");
-
-                    var sanitizedTextRemote = processor.ExtractTextFromFile(appOptionsDiffTool.RemoteFile);
-                    sanitizedRemoteFilePath = WriteToTemp(sanitizedTextRemote, ".json");
-                }
-                else
-                {
-                    sanitizedLocalFilePath = appOptionsDiffTool.LocalFile;
-                    sanitizedRemoteFilePath = appOptionsDiffTool.LocalFile;
-                }
-            }
-            else
-            {
-                sanitizedLocalFilePath = appOptionsDiffTool.LocalFile;
-                sanitizedRemoteFilePath = appOptionsDiffTool.RemoteFile;
-            }
-
+            string sanitizedLocalFilePath = appOptionsDiffTool.LocalFile;
+            string sanitizedRemoteFilePath = appOptionsDiffTool.RemoteFile;
             
+            var localIsJson = string.Equals(
+                extensionLocalFile,
+                ".json", StringComparison.OrdinalIgnoreCase);
+            var remoteIsJson = string.Equals(
+                extensionRemoteFile,
+                ".json", StringComparison.OrdinalIgnoreCase);
+            var localIsPbix = string.Equals(
+                extensionLocalFile,
+                ".pbix", StringComparison.OrdinalIgnoreCase);
+            var remoteIsPbix = string.Equals(
+                extensionRemoteFile,
+                ".pbix", StringComparison.OrdinalIgnoreCase);
+
+            IExtractText pbixProcessor = new PbixProcessor();
+            IExtractText jsonProcessor = new JsonProcessor();
+            if (localIsPbix)
+            {
+                var sanitizedTextLocal = pbixProcessor.ExtractTextFromFile(appOptionsDiffTool.LocalFile, new ExtractTextOptions { IncludeMetaData = true });
+                sanitizedLocalFilePath = WriteToTemp(sanitizedTextLocal, ".txt");
+            }
+            else if (localIsJson)
+            {
+                var sanitizedTextLocal = jsonProcessor.ExtractTextFromFile(appOptionsDiffTool.LocalFile);
+                sanitizedLocalFilePath = WriteToTemp(sanitizedTextLocal, appOptionsDiffTool.TreatJsonAsJson ? ".json": ".txt");
+            }
+            else if (localFileIsNull)
+            {
+                sanitizedLocalFilePath = WriteToTemp(string.Empty, ".txt");
+            }
+            
+            if (remoteIsPbix)
+            {
+                var sanitizedTextRemote = pbixProcessor.ExtractTextFromFile(appOptionsDiffTool.RemoteFile,
+                    new ExtractTextOptions { IncludeMetaData = true });
+                sanitizedRemoteFilePath = WriteToTemp(sanitizedTextRemote, ".txt");
+            }
+            else if (remoteIsJson)
+            {
+                var sanitizedTextRemote = jsonProcessor.ExtractTextFromFile(appOptionsDiffTool.RemoteFile);
+                sanitizedRemoteFilePath = WriteToTemp(sanitizedTextRemote, appOptionsDiffTool.TreatJsonAsJson ? ".json" : ".txt");
+            }
+            else if (remoteFileIsNull)
+            {
+                sanitizedRemoteFilePath = WriteToTemp(string.Empty, ".txt");
+            }
+
             var diffTool = appOptionsDiffTool.DiffTool;
             Dictionary<string, string> templateData = new Dictionary<string, string>(){
                 {"{localFilePath}", sanitizedLocalFilePath},
