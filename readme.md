@@ -19,66 +19,70 @@ When used with PBIX, the tool extracts the mashup formulas in your PBIX file. If
 The first thing that one needs to do is to configure how pbix and json files are to be treated by GIT and the tools that GIT can use to decode and compare the files. This is done using the following commands
 
 ```
-	git config --local diff.tool PowerBiDiffer
-	git config --local diff.guitool PowerBiDiffer
-	git config --local difftool.prompt false
-	git config --local difftool.PowerBiDiffer.cmd "\"c:\PowerBiDiffer\PowerBiDiffer.exe\" difftool \"$LOCAL\" \"$REMOTE\" -d \"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.exe\" -a '/diff \"{lp}\" \"{rp}\" \"{ln}\" \"{rn}\"'"
-	git config --local difftool.PowerBiDiffer.keepbackup false
-	git config --local diff.json.textconv "\"c:\PowerBiDiffer\PowerBiDiffer.exe\" textconv"
-	git config --local diff.pbix.textconv "\"c:\PowerBiDiffer\PowerBiDiffer.exe\" textconv"
+git config --local diff.tool PowerBiDiffer
+git config --local diff.guitool PowerBiDiffer
+git config --local difftool.prompt false
+git config --local difftool.PowerBiDiffer.cmd "\"c:\PowerBiDiffer\PowerBiDiffer.exe\" difftool \"$LOCAL\" \"$REMOTE\" -d \"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.exe\" -a '/diff \"{lp}\" \"{rp}\" \"{ln}\" \"{rn}\"'"
+git config --local difftool.PowerBiDiffer.keepbackup false
+git config --local diff.json.textconv "\"c:\PowerBiDiffer\PowerBiDiffer.exe\" textconv"
+git config --local diff.pbix.textconv "\"c:\PowerBiDiffer\PowerBiDiffer.exe\" textconv"
 
 ```
 
 
 ## Performing Comparisions ##
 
-	#### Uses the custom tool for displaying difference ####
+#### Uses the custom tool for displaying difference ####
 
-		git difftool *.pbix
+	git difftool *.pbix
 
-		git difftool *.json
+	git difftool *.json
 
-	Display the difference for only files with extension \*.json, comparing current set of files to previous check in (useful when you are looking at changes in branch)
+Display the difference for only files with extension \*.json, comparing current set of files to previous check in (useful when you are looking at changes in branch)
 	
-		git difftool HEAD^^ *.json
+	git difftool HEAD^^ *.json
 
-	Display the difference between current commit and the previous commit (use ^ to signify how far back)
+Display the difference between current commit and the previous commit (use ^ to signify how far back)
 	
-		git difftool HEAD^ HEAD
+	git difftool HEAD^ HEAD
 	
-	Display the difference between 2 commits (all of these commands can be used with just *git diff* too).
+Display the difference between 2 commits (all of these commands can be used with just *git diff* too).
 	
-		git difftool 3208 fc4b
+	git difftool 3208 fc4b
 		
-	Display the difference between commit 3208 and HEAD
+Display the difference between commit 3208 and HEAD
 	
-		git difftool 3208 HEAD
+	git difftool 3208 HEAD
 		
-	Display the difference for only files with extension \*.json
+Display the difference for only files with extension \*.json
 	
-		git difftool *.json
+	git difftool *.json
 		
 	
-	#### Uses the command line and Gits diff tool ####
+#### Uses the command line and Gits diff tool ####
 	
-	The following steps need to be done only if you wish to use the gitdiff tool
+The following steps need to be done only if you wish to use the gitdiff tool
 	
-	1. Add a .gitattributes file if you dont already have one (this is located at the root of your repo)
+1. Add a .gitattributes file if you dont already have one (this is located at the root of your repo)
 	
-	1. Add the following text to the .gitattributes file (these are needed if you wish to use git diff, but not git difftool)
+1. Add the following text to the .gitattributes file (these are needed if you wish to use git diff, but not git difftool)
 
-		*.PBIX   diff=pbix
-		*.pbix   diff=pbix
-		*.json	 diff=json
-		*.JSON	 diff=json
+```
+*.PBIX   diff=pbix
+*.pbix   diff=pbix
+*.json	 diff=json
+*.JSON	 diff=json
+```
 
-		git diff *.pbix
-		
-		or
+### Commands ###
 
-		git diff *.json
+	git diff *.pbix
+	
+	or
+	
+	git diff *.json
 		
-		*to exit out of the diff mode hit q*
+*to exit out of the diff mode hit q*
 
 	
 ## Standalone Usage ##
@@ -139,19 +143,20 @@ These steps shouldnt have to be performed and are needed only if * Update GIT Co
 
 1. Add the following code: *(Make sure you update the location to where you have put PowerBiDiffer. Also update path to Visual Studio. if you instead want to use WinMerge, replace commands appropriates)*
 
-		[diff]
-			tool = PowerBiDiffer
-			guitool = PowerBiDiffer
-		[difftool]
-			prompt = false
-		[difftool "PowerBiDiffer"]
-			cmd = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" difftool "$LOCAL" "$REMOTE" -d \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Common7\\IDE\\devenv.exe\" -a '/diff \"{lp}\" \"{rp}\" \"{ln}\" \"{rn}\"'
-			#uncomment below to use winmerge
-			#cmd = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" difftool "$LOCAL" "$REMOTE" -d \"C:\\Program Files (x86)\\WinMerge\\winmergeu.exe\" -a '/xq /e /s /dl \"{ln}\" /dr \"{rn}\" \"{lp}\" \"{rp}\"'
-			keepBackup = false
-		[diff "json"]
-			textconv = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" textconv
-		[diff "pbix"]
-			textconv = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" textconv
-
+```
+[diff]
+	tool = PowerBiDiffer
+	guitool = PowerBiDiffer
+[difftool]
+	prompt = false
+[difftool "PowerBiDiffer"]
+	cmd = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" difftool "$LOCAL" "$REMOTE" -d \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Common7\\IDE\\devenv.exe\" -a '/diff \"{lp}\" \"{rp}\" \"{ln}\" \"{rn}\"'
+	#uncomment below to use winmerge
+	#cmd = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" difftool "$LOCAL" "$REMOTE" -d \"C:\\Program Files (x86)\\WinMerge\\winmergeu.exe\" -a '/xq /e /s /dl \"{ln}\" /dr \"{rn}\" \"{lp}\" \"{rp}\"'
+	keepBackup = false
+[diff "json"]
+	textconv = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" textconv
+[diff "pbix"]
+	textconv = \"c:\\PowerBiDiffer\\PowerBiDiffer.exe\" textconv
+```
 1. Save the file
