@@ -22,6 +22,9 @@ The first thing that one needs to do is to configure how pbix and json files are
 git config --local diff.tool PowerBiDiffer
 git config --local diff.guitool PowerBiDiffer
 git config --local difftool.prompt false
+REM following is for WinMerge
+REM git config --local difftool.PowerBiDiffer.cmd "\"c:\PowerBiDiffer\PowerBiDiffer.exe\" difftool \"$LOCAL\" \"$REMOTE\" -d \"C:\Program Files (x86)\WinMerge\winmergeu.exe\" -a '/xq /e /s /dl \"{ln}\" /dr \"{rn}\" \"{lp}\" \"{rp}\"'"
+REM following is for VS
 git config --local difftool.PowerBiDiffer.cmd "\"c:\PowerBiDiffer\PowerBiDiffer.exe\" difftool \"$LOCAL\" \"$REMOTE\" -d \"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.exe\" -a '/diff \"{lp}\" \"{rp}\" \"{ln}\" \"{rn}\"'"
 git config --local difftool.PowerBiDiffer.keepbackup false
 git config --local diff.json.textconv "\"c:\PowerBiDiffer\PowerBiDiffer.exe\" textconv"
