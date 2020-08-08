@@ -9,6 +9,10 @@ namespace PowerBiDiffer
     {
         public string ExtractTextFromFile(string filePath, ExtractTextOptions extractTextOptions = null)
         {
+            var fileIsNull = string.Equals(filePath, "nul", StringComparison.OrdinalIgnoreCase);
+            if (fileIsNull)
+                return string.Empty;
+
             using var textStream = File.OpenText(filePath);
             using var jsonTextReader = new JsonTextReader(textStream) { DateParseHandling = DateParseHandling.None };
             var jToken = JToken.ReadFrom(jsonTextReader);

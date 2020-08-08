@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -36,6 +37,11 @@ namespace PowerBiDiffer
                     Console.WriteLine(arg);
                 }
                 Console.WriteLine("Args printed!");
+            }
+
+            if (appOptions.LaunchDebugger)
+            {
+                Debugger.Launch();
             }
 
             switch (appOptions)
