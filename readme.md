@@ -116,26 +116,34 @@ The following steps need to be done only if you wish to use the gitdiff tool
 ## Command Line Options ##
 
 ### Verbs: ###
-  textconv    Mode: Text Conversion
-  difftool    Mode: Diff Tool
-  help        Display more information on a specific command.
-  version     Display version information.
 
+```
+
+textconv    Mode: Text Conversion
+difftool    Mode: Diff Tool
+help        Display more information on a specific command.
+version     Display version information.
+
+```
 ### Options: ###
-  -d, --difftool    Diff Tool Path
-  -a, --args        Diff Tool arguments. Supported templates: {localFilePath} or
-                    {lp}: Local file path{remoteFilePath} or {rp}: Remote file
-                    path{localFileName} or {ln}: local file name (for
-                    description){remoteFileName} or {rn}: remote file name (for
-                    description)
-  -v                (Default: false) Verbose
-  -l                (Default: false) Break into debugger
-  -j                (Default: true) Treat json files as JSON and not as text
-  value pos. 0      Required. Local file
-  value pos. 1      Remote file
-  --help            Display this help screen.
-  --version         Display version information.
 
+```
+
+-d, --difftool    Diff Tool Path
+-a, --args        Diff Tool arguments. Supported templates: {localFilePath} or
+                  {lp}: Local file path{remoteFilePath} or {rp}: Remote file
+                  path{localFileName} or {ln}: local file name (for
+                  description){remoteFileName} or {rn}: remote file name (for
+                  description)
+-v                (Default: false) Verbose
+-l                (Default: false) Break into debugger
+-j                (Default: true) Treat json files as JSON and not as text value 
+pos. 0 Required.  Local file value 
+pos. 1            Remote file
+--help            Display this help screen.
+--version         Display version information.
+
+```
 
 
 ### Manually fixing GIT configuration ###
