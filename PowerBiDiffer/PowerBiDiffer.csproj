@@ -12,9 +12,6 @@
     <None Include="..\pbiDiffer_uninstallInGit.cmd" Link="pbiDiffer_uninstallInGit.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\powerbidiffer.cmd" Link="powerbidiffer.cmd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="..\readme.md" Link="readme.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
