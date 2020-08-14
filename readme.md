@@ -12,24 +12,32 @@ When used with PBIX, the tool extracts the mashup formulas in your PBIX file. If
 
 # Instructions #
 
-## GIT ##
+
+### Download the tool ###
+
+1. Get the latest set of files and download it to your computer from [releases](https://github.com/rajrao/PowerBiDiffer/releases)
+	
+	a. Expand the assets section under the latest release and download the PowerBiDiffer.zip file.
+2. Unzip the contents of the zip file to a folder on your computer (tip: before doing this, right click on the zip file and go to properties and check the "Unblock" checkbox and click ok).
 
 ### Update GIT Configuration ###
 
-The first thing that one needs to do is to configure how pbix and json files are to be treated by GIT and the tools that GIT can use to decode and compare the files. 
-This is can be done quickly and easily by running the script **"pbiDiffer_installInGit.cmd"**. This script must be run from the location where the PowerBiDiffer tool has been downloaded. 
+3. Run the script **"pbiDiffer_installInGit.cmd"**. This script must be run from the location where the PowerBiDiffer tool has been downloaded. 
 *The tool can be uninstalled from GIT using: "pbiDiffer_uninstallInGit.cmd"*
 
+### Performing Comparisions ###
 
-## Performing Comparisions ##
-
-##Using Visual Studio##
+#### Using Visual Studio ####
 
 You can right click on a file and select the compare with previous version option. Similarly, you can view the history of your file and perform comparsions between versions
 
-####From Git command prompt:####
+#### Using Other tools ####
 
-Advanced users!
+You can use this tool with VsCode and WinMerge. Uncomment the appropriate sections in the script PowerBiDiffer.cmd, to use it with your favorite tool.
+
+#### Advanced Users: Using it from the Git command prompt: ####
+
+These are instructions for using the tool with git from the command prompt.
 
 	git difftool *.pbix
 
