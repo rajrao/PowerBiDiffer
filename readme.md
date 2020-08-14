@@ -23,7 +23,13 @@ This is can be done quickly and easily by running the script **"pbiDiffer_instal
 
 ## Performing Comparisions ##
 
-#### Uses the custom tool for displaying difference ####
+##Using Visual Studio##
+
+You can right click on a file and select the compare with previous version option. Similarly, you can view the history of your file and perform comparsions between versions
+
+####From Git command prompt:####
+
+Advanced users!
 
 	git difftool *.pbix
 
