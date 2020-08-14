@@ -43,7 +43,7 @@ namespace PowerBiDiffer
             {
                 Debugger.Launch();
             }
-
+            
             switch (appOptions)
             {
                 case AppOptionsDiffTool appOptionsDiffTool:

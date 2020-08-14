@@ -5,9 +5,15 @@ namespace PowerBiDiffer
     [Verb("difftool", HelpText = "Mode: Diff Tool")]
     public class AppOptionsDiffTool: AppOptions
     {
+        private string _localFile;
+
         [Value(0, Required = true, HelpText = "Local file")]
-        public string LocalFile { get; set; }
-        
+        public string LocalFile
+        {
+            get => _localFile;
+            set => _localFile = value?.Replace("/","\\");
+        }
+
         [Value(1, Required = false, HelpText = "Remote file")]
         public string RemoteFile { get; set; }
 

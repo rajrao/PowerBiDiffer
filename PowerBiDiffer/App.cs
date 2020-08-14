@@ -49,7 +49,12 @@ namespace PowerBiDiffer
             {
                 sanitizedLocalFilePath = WriteToTemp(string.Empty, ".txt");
             }
-            
+            else if (appOptionsDiffTool.LocalFile.Contains(Path.GetTempPath(), StringComparison.OrdinalIgnoreCase))
+            {
+                sanitizedLocalFilePath = Path.GetTempFileName();
+                File.Copy(appOptionsDiffTool.LocalFile, sanitizedLocalFilePath, true);
+            }
+
             if (remoteIsPbix)
             {
                 var sanitizedTextRemote = pbixProcessor.ExtractTextFromFile(appOptionsDiffTool.RemoteFile,
@@ -64,6 +69,11 @@ namespace PowerBiDiffer
             else if (remoteFileIsNull)
             {
                 sanitizedRemoteFilePath = WriteToTemp(string.Empty, ".txt");
+            }
+            else if (appOptionsDiffTool.RemoteFile.Contains(Path.GetTempPath(), StringComparison.OrdinalIgnoreCase))
+            {
+                sanitizedRemoteFilePath = Path.GetTempFileName();
+                File.Copy(appOptionsDiffTool.RemoteFile, sanitizedRemoteFilePath, true);
             }
 
             var diffTool = appOptionsDiffTool.DiffTool;

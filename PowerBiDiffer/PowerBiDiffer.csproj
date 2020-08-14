@@ -6,7 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\pbiDiffer_installInGit.cmd" Link="pbiDiffer_installInGit.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\pbiDiffer_uninstallInGit.cmd" Link="pbiDiffer_uninstallInGit.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\powerbidiffer.cmd" Link="powerbidiffer.cmd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\readme.md" Link="readme.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\vswhere.exe" Link="vswhere.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
