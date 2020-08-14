@@ -17,8 +17,8 @@ When used with PBIX, the tool extracts the mashup formulas in your PBIX file. If
 ### Update GIT Configuration ###
 
 The first thing that one needs to do is to configure how pbix and json files are to be treated by GIT and the tools that GIT can use to decode and compare the files. 
-This is can be done quickly and easily by running the script "pbiDiffer_installInGit.cmd". This script must be run from the location where the PowerBiDiffer tool has been downloaded. 
-* The tool can be uninstalled from GIT using: "pbiDiffer_uninstallInGit.cmd" *
+This is can be done quickly and easily by running the script **"pbiDiffer_installInGit.cmd"**. This script must be run from the location where the PowerBiDiffer tool has been downloaded. 
+*The tool can be uninstalled from GIT using: "pbiDiffer_uninstallInGit.cmd"*
 
 
 ## Performing Comparisions ##
