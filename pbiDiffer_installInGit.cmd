@@ -25,13 +25,13 @@ echo creating powerbidiffer.cmd File
 
 (
     Echo ::Visual Studio
-    Echo @c:\powerbidiffer\powerbidiffer.exe difftool %%1 %%2 -d "!InstallDir!" -a "/diff ""{lp}"" ""{rp}"" ""{ln}"" ""{rn}"""
+    Echo @"%cd%\powerbidiffer.exe" difftool %%1 %%2 -d "!InstallDir!" -a "/diff ""{lp}"" ""{rp}"" ""{ln}"" ""{rn}"""
     ECHO.
     ECHO ::VSCode
-    ECHO ::c:\powerbidiffer\powerbidiffer.exe difftool  %%1 %%2 -d "C:\Program Files\Microsoft VS Code\Code.exe"  -a -- "--diff ""{lp}"" ""{rp}"""
+    ECHO ::@"%cd%\powerbidiffer.exe" difftool  %%1 %%2 -d "C:\Program Files\Microsoft VS Code\Code.exe"  -a -- "--diff ""{lp}"" ""{rp}"""
     ECHO.
     ECHO ::WinMerge
-    ECHO ::@c:\powerbidiffer\powerbidiffer.exe difftool  %%1 %%2 -d "C:\Program Files (x86)\WinMerge\WinMergeU.exe" -a "/xq /e /s /dl ""{ln}"" /dr ""{rn}"" ""{lp}"" ""{rp}"""
+    ECHO ::@"%cd%\powerbidiffer.exe" difftool  %%1 %%2 -d "C:\Program Files (x86)\WinMerge\WinMergeU.exe" -a "/xq /e /s /dl ""{ln}"" /dr ""{rn}"" ""{lp}"" ""{rp}"""
 ) > "PowerBiDiffer.cmd"
 
 :END
