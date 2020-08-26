@@ -20,12 +20,8 @@ namespace PowerBiDiffer
             string sanitizedLocalFilePath = appOptionsDiffTool.LocalFile;
             string sanitizedRemoteFilePath = appOptionsDiffTool.RemoteFile;
             
-            var localIsJson = string.Equals(
-                extensionLocalFile,
-                ".json", StringComparison.OrdinalIgnoreCase);
-            var remoteIsJson = string.Equals(
-                extensionRemoteFile,
-                ".json", StringComparison.OrdinalIgnoreCase);
+            var localIsJson = FileIsJson(extensionLocalFile);
+            var remoteIsJson = FileIsJson(extensionRemoteFile);
             var localIsPbix = string.Equals(
                 extensionLocalFile,
                 ".pbix", StringComparison.OrdinalIgnoreCase);
@@ -105,6 +101,15 @@ namespace PowerBiDiffer
                     Console.WriteLine("Process was not started!");
                 }
             }
+        }
+
+        private static bool FileIsJson(string extensionLocalFile)
+        {
+            return string.Equals(
+                extensionLocalFile,
+                ".json", StringComparison.OrdinalIgnoreCase) || string.Equals(
+                extensionLocalFile,
+                ".ipynb", StringComparison.OrdinalIgnoreCase);
         }
 
         public static void ConvertToText(string filePath)

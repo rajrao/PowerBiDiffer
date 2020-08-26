@@ -17,7 +17,10 @@ namespace PowerBiDiffer
             using var jsonTextReader = new JsonTextReader(textStream) { DateParseHandling = DateParseHandling.None };
             var jToken = JToken.ReadFrom(jsonTextReader);
             var indentedJson = jToken.ToString(Newtonsoft.Json.Formatting.Indented);
-            var sanitizedText = indentedJson.Replace("\\r\\n", Environment.NewLine).Replace("\\\"", "\"");
+            var sanitizedText = indentedJson
+                                        .Replace(@"\r\n", Environment.NewLine)
+                                        .Replace("\\\"", "\"")
+                                        .Replace(@"\n", Environment.NewLine);
             return sanitizedText;
         }
     }

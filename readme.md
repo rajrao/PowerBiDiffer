@@ -43,6 +43,10 @@ These are instructions for using the tool with git from the command prompt.
 
 	git difftool *.json
 
+Compare using PowerBiDiffer the commit that was 3 revisions prior
+
+	git difftool HEAD~3 -t PowerBiDiffer
+
 Display the difference for only files with extension \*.json, comparing current set of files to previous check in (useful when you are looking at changes in branch)
 	
 	git difftool HEAD^^ *.json

@@ -11,7 +11,7 @@ namespace PowerBiDiffer
         public bool LaunchDebugger { get; set; }
 
 
-        [Option('j', Default = true, HelpText = "Treat json files as JSON and not as text")]
+        [Option('j', Default = false, HelpText = "Treat json files as JSON and not as text")]
         public bool TreatJsonAsJson { get; set; }
     }
 }
